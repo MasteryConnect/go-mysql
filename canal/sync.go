@@ -79,10 +79,7 @@ func (c *Canal) handleRowsEvent(e *replication.BinlogEvent) error {
 	ev := e.Event.(*replication.RowsEvent)
 
 	// Caveat: table may be altered at runtime.
-	schema := string(ev.Table.Schema)
-	table := string(ev.Table.Table)
-
-	t, err := c.GetTable(schema, table)
+	t, err := c.GetTableForEvent(ev.Table)
 	if err != nil {
 		return errors.Trace(err)
 	}
