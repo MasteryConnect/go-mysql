@@ -24,6 +24,8 @@ const (
 	TYPE_TIME                 // time
 	TYPE_BIT                  // bit
 	TYPE_JSON                 // json
+	TYPE_TEXT                 // text (base64 encoded)
+	TYPE_BLOB                 // blob (base64 encoded)
 )
 
 type TableColumn struct {
@@ -93,6 +95,10 @@ func (ta *Table) AddColumn(name string, columnType string, extra string) {
 		ta.Columns[index].Type = TYPE_BIT
 	} else if strings.HasPrefix(columnType, "json") {
 		ta.Columns[index].Type = TYPE_JSON
+	} else if strings.HasPrefix(columnType, "text") {
+		ta.Columns[index].Type = TYPE_TEXT
+	} else if strings.HasPrefix(columnType, "blob") {
+		ta.Columns[index].Type = TYPE_BLOB
 	} else {
 		ta.Columns[index].Type = TYPE_STRING
 	}
