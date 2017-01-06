@@ -37,13 +37,6 @@ func (l *fsInfoLoader) Load(setValues MasterInfoSetter) error {
 	return setValues(m.Addr, m.Name, m.Position)
 }
 
-func (l *fsInfoLoader) oldLoad() {
-	var m masterInfo
-
-	m.name = l.path
-	m.infoLoader = l
-}
-
 func (l *fsInfoLoader) Save(addr, name string, position uint32, force bool) error {
 	var buf bytes.Buffer
 	e := toml.NewEncoder(&buf)
