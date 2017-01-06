@@ -37,6 +37,9 @@ type Config struct {
 	DataDir  string `toml:"data_dir"`
 
 	Dump DumpConfig `toml:"dump"`
+
+	// allow the master info loading to be configured
+	InfoLoader MasterInfoLoader
 }
 
 func NewConfigWithFile(name string) (*Config, error) {

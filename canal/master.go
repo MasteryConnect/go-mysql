@@ -1,16 +1,11 @@
 package canal
 
 import (
-	"bytes"
-	"os"
 	"sync"
 	"time"
 
-	"github.com/BurntSushi/toml"
 	"github.com/juju/errors"
-	"github.com/ngaut/log"
 	"github.com/siddontang/go-mysql/mysql"
-	"github.com/siddontang/go/ioutil2"
 )
 
 type masterInfo struct {
@@ -23,24 +18,22 @@ type masterInfo struct {
 	l sync.Mutex
 
 	lastSaveTime time.Time
+
+	infoLoader MasterInfoLoader
 }
 
-func loadMasterInfo(name string) (*masterInfo, error) {
-	var m masterInfo
+// abstract the way in which the master info is loaded and saved
+type MasterInfoSetter func(addr, name string, position uint32) error
+type MasterInfoLoader interface {
+	Load(setValues MasterInfoSetter) error
+	Save(addr, name string, position uint32, force bool) error
+}
 
-	m.name = name
-
-	f, err := os.Open(name)
-	if err != nil && !os.IsNotExist(errors.Cause(err)) {
-		return nil, errors.Trace(err)
-	} else if os.IsNotExist(errors.Cause(err)) {
-		return &m, nil
-	}
-	defer f.Close()
-
-	_, err = toml.DecodeReader(f, &m)
-
-	return &m, err
+func (m *masterInfo) Setter(addr, name string, position uint32) error {
+	m.Addr = addr
+	m.Name = name
+	m.Position = position
+	return nil
 }
 
 func (m *masterInfo) Save(force bool) error {
@@ -52,15 +45,7 @@ func (m *masterInfo) Save(force bool) error {
 		return nil
 	}
 
-	var buf bytes.Buffer
-	e := toml.NewEncoder(&buf)
-
-	e.Encode(m)
-
-	var err error
-	if err = ioutil2.WriteFileAtomic(m.name, buf.Bytes(), 0644); err != nil {
-		log.Errorf("canal save master info to file %s err %v", m.name, err)
-	}
+	err := m.infoLoader.Save(m.Addr, m.Name, m.Position, force)
 
 	m.lastSaveTime = n
 

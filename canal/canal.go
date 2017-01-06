@@ -60,13 +60,21 @@ func NewCanal(cfg *Config) (*Canal, error) {
 	c.rsHandlers = make([]RowsEventHandler, 0, 4)
 	c.tables = make(map[string]*schema.Table)
 
+	c.master = &masterInfo{}
+
+	// allow the master info to be loaded from a configured loader
+	c.master.infoLoader = cfg.InfoLoader
+	if c.master.infoLoader == nil {
+		c.master.infoLoader = NewFsInfoLoader(c.masterInfoPath())
+	}
+
 	var err error
-	if c.master, err = loadMasterInfo(c.masterInfoPath()); err != nil {
+	if err = c.master.infoLoader.Load(c.master.Setter); err != nil {
 		return nil, errors.Trace(err)
 	} else if len(c.master.Addr) != 0 && c.master.Addr != c.cfg.Addr {
 		log.Infof("MySQL addr %s in old master.info, but new %s, reset", c.master.Addr, c.cfg.Addr)
 		// may use another MySQL, reset
-		c.master = &masterInfo{}
+		c.master = &masterInfo{infoLoader: c.master.infoLoader} // keep the configured info loader
 	}
 
 	c.master.Addr = c.cfg.Addr
