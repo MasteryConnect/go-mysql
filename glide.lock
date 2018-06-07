@@ -1,5 +1,5 @@
-hash: 1a3d05afef96cd7601a004e573b128db9051eecd1b5d0a3d69d3fa1ee1a3e3b8
-updated: 2016-09-03T12:30:00.028685232+08:00
+hash: eabaf2e73c62a0af69d9b78057e6536dfb0097a822e3a0767f46e4361d457402
+updated: 2018-06-07T17:22:21.021107436Z
 imports:
 - name: github.com/BurntSushi/toml
   version: 056c9bc7be7190eaa7715723883caffa5f8fa3e4
@@ -16,13 +16,23 @@ imports:
 - name: github.com/pingcap/check
   version: ce8a2f822ab1e245a4eefcef2996531c79c943f1
 - name: github.com/satori/go.uuid
-  version: 879c5887cd475cd7864858769793b2ceb0d44feb
+  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
 - name: github.com/siddontang/go
   version: 354e14e6c093c661abb29fd28403b3c19cff5514
   subpackages:
   - hack
   - ioutil2
   - sync2
+- name: github.com/siddontang/go-mysql
+  version: 9f867b4076f8de375f64d1b959aa46c601bf7769
+  subpackages:
+  - canal
+  - client
+  - dump
+  - mysql
+  - packet
+  - replication
+  - schema
 - name: golang.org/x/net
   version: 6acef71eb69611914f7a30939ea9f6e194c78172
   subpackages:
