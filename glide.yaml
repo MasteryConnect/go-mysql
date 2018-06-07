@@ -1,5 +1,7 @@
-package: github.com/siddontang/go-mysql
+package: github.com/MasteryConnect/go-mysql
 import:
+- package: github.com/siddontang/go-mysql
+  version: 9f867b4076f8de375f64d1b959aa46c601bf7769
 - package: github.com/BurntSushi/toml
   version: 056c9bc7be7190eaa7715723883caffa5f8fa3e4
 - package: github.com/go-sql-driver/mysql
